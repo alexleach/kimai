@@ -56,9 +56,22 @@ services:
         arguments:
             $settings: '%kimai.config%'
 
+    ## How to allow the PDF converter to be selected at runtime?
+    App\Pdf\DompdfConverter:
+        arguments:
+            $cacheDirectory: '%kernel.cache_dir%'
+
     App\Pdf\MPdfConverter:
         arguments:
             $cacheDirectory: '%kernel.cache_dir%'
+
+    App\Pdf\HtmlToPdfConverter $dompdfTransformer: '@App\Pdf\DompdfConverter'
+
+    App\Pdf\HtmlToPdfConverter $mpdfTransformer: '@App\Pdf\MPdfConverter'
+
+    # For now, just set the default Pdf Converter class here.
+    # Figure out later how to select the pdf converter a better way.
+    App\Pdf\HtmlToPdfConverter: '@App\Pdf\MPdfConverter'
 
     App\Plugin\PluginManager:
         arguments: [!tagged kimai.plugin]
